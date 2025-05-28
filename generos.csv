@@ -1,0 +1,16 @@
+codigo,nombre,descripcion
+G01,Acción,Contenido con alta energía y escenas de combate
+G02,Drama,Historias emocionales y profundas
+G03,Ciencia Ficción,Exploración de mundos futuristas
+G04,Comedia,Contenido humorístico
+G05,Terror,Historias de miedo y suspenso
+G06,Aventura,Viajes y exploraciones emocionantes
+G07,Romance,Historias de amor y relaciones
+G08,Fantasía,Mundos mágicos y míticos
+G09,Suspenso,Tensión y misterio
+G10,Documental,Contenido informativo y real
+G11,Animación,Contenido animado
+G12,Crimen,Historias de delitos y justicia
+G13,Misterio,Enigmas y resolución de casos
+G14,Biografía,Vidas de personas reales
+G15,Musical,Contenido con música y baile
