@@ -1,0 +1,58 @@
+// 1. ¿Cuál es el género que más ha visto un usuario?
+MATCH (u:Usuario {usuariold: 'U001'})-[:VIO_UN]->(c:Contenido)
+RETURN c.tipo AS TipoContenido, COUNT(*) AS VecesVisto
+ORDER BY VecesVisto DESC
+LIMIT 1;
+
+// 2. ¿Qué episodios de una serie específica ha visto un usuario?
+MATCH (u:Usuario {usuariold: 'U001'})-[:VIO_UN]->(e:Contenido {tipo: 'Episodio'})
+WITH u, e
+MATCH (s:Contenido {contenidold: 'C002'})-[:CONTIENE]->(e)
+RETURN e.nombre AS Episodio, e.contenidold AS ID, e.anoEstreno AS Año
+ORDER BY e.contenidold;
+
+// 3. ¿Cuál es el contenido (película o serie) más visto en un país determinado?
+MATCH (p:Pais {codigo: 'P01'})<-[:DISPONIBLE_EN]-(c:Contenido)<-[:VIO_UN]-(u:Usuario)
+RETURN c.nombre AS Contenido, c.tipo AS Tipo, COUNT(*) AS Visualizaciones
+ORDER BY Visualizaciones DESC
+LIMIT 1;
+
+// 4. ¿Qué películas están disponibles para reproducción en más de tres países?
+MATCH (c:Contenido {tipo: 'Pelicula'})-[:DISPONIBLE_EN]->(p:Pais)
+WITH c, COUNT(DISTINCT p) AS Paises
+WHERE Paises > 3
+RETURN c.nombre AS Pelicula, Paises
+ORDER BY Paises DESC;
+
+// 5. ¿Qué contenido popular en el país de residencia de un usuario puede
+recomendársele, si aún no lo ha visto?
+MATCH (u:Usuario {usuariold: 'U001'})-[:VIO_UN]->(:Contenido)-[:DISPONIBLE_EN]->(p:Pais)
+WITH DISTINCT p, u
+MATCH (p)<-[:DISPONIBLE_EN]-(c:Contenido)
+WHERE NOT (u)-[:VIO_UN]->(c)
+WITH c, p, COUNT(*) AS TempVisualizaciones
+MATCH (c)<-[:VIO_UN]-(:Usuario)
+RETURN c.nombre AS Contenido, c.tipo AS Tipo, COUNT(*) AS Visualizaciones
+ORDER BY Visualizaciones DESC
+LIMIT 1;
+
+// 6. ¿Qué contenidos se pueden recomendar a un usuario según los géneros que ha
+consumido previamente?
+MATCH (u:Usuario {usuariold: 'U001'})-[:VIO_UN]->(c:Contenido)
+WITH DISTINCT c.tipo AS Tipo, u
+MATCH (c:Contenido)
+WHERE c.tipo = Tipo AND NOT (u)-[:VIO_UN]->(c)
+RETURN c.nombre AS Contenido, c.tipo AS Tipo
+ORDER BY c.nombre
+LIMIT 5;
+
+// 7. ¿Qué contenido han visto otros usuarios que comparten historial de
+visualización con el usuario, y que él no ha visto?
+MATCH (u:Usuario {usuariold: 'U001'})-[:VIO_UN]->(c:Contenido)<-[:VIO_UN]-(other:Usuario)
+WHERE other.usuariold <> 'U001'
+WITH DISTINCT other, c, u
+MATCH (other)-[:VIO_UN]->(recommended:Contenido)
+WHERE NOT (u)-[:VIO_UN]->(recommended)
+RETURN recommended.nombre AS Contenido, recommended.tipo AS Tipo, COUNT(DISTINCT other) AS UsuariosSimilares
+ORDER BY UsuariosSimilares DESC
+LIMIT 5;
