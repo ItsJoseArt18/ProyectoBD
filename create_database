@@ -1,0 +1,96 @@
+// Restriccion para identificadores unicos 
+CREATE CONSTRAINT IF NOT EXISTS FOR (u:Usuario) REQUIRE u.usuariold IS UNIQUE;
+CREATE CONSTRAINT IF NOT EXISTS FOR (c:Contenido) REQUIRE c.contenidold IS UNIQUE;
+CREATE CONSTRAINT IF NOT EXISTS FOR (g:Genero) REQUIRE g.codigo IS UNIQUE;
+CREATE CONSTRAINT IF NOT EXISTS FOR (i:Idioma) REQUIRE i.codigo IS UNIQUE;
+CREATE CONSTRAINT IF NOT EXISTS FOR (p:Pais) REQUIRE p.codigo IS UNIQUE;
+CREATE CONSTRAINT IF NOT EXISTS FOR (t:Temporada) REQUIRE t.temporadald IS UNIQUE;
+
+// Load del nodo Usuario
+LOAD CSV WITH HEADERS FROM 'file:///usuarios.csv' AS row
+CREATE (n:Usuario {
+  usuariold: row.usuariold,
+  nombre: row.nombre,
+  edad: toInteger(row.edad),
+  sexo: row.sexo,
+  email: row.email,
+  fechaNacimiento: row.fechaNacimiento
+});
+
+// Load del nodo contenidos 
+LOAD CSV WITH HEADERS FROM 'file:///contenidos.csv' AS row
+CREATE (n:Contenido {
+  contenidold: row.contenidold,
+  nombre: row.nombre,
+  tipo: row.tipo,
+  descripcion: row.descripcion,
+  duracion: toInteger(row.duracion),
+  anoEstreno: toInteger(row.anoEstreno),
+  calificacionPromedio: toFloat(row.calificacionPromedio)
+});
+
+// Load del nodo generos
+LOAD CSV WITH HEADERS FROM 'file:///generos.csv' AS row
+CREATE (n:Genero {
+  codigo: row.codigo,
+  nombre: row.nombre,
+  descripcion: row.descripcion
+});
+
+// Load del nodo idioma
+LOAD CSV WITH HEADERS FROM 'file:///idiomas.csv' AS row
+CREATE (n:Idioma {
+  codigo: row.codigo,
+  nombre: row.nombre
+});
+
+// Load del nodo paises
+LOAD CSV WITH HEADERS FROM 'file:///paises.csv' AS row
+CREATE (n:Pais {
+  codigo: row.codigo,
+  nombre: row.nombre
+});
+
+// Load del nodo temporadas
+LOAD CSV WITH HEADERS FROM 'file:///temporadas.csv' AS row
+CREATE (n:Temporada {
+  temporadald: row.temporadald,
+  nombre: row.nombre,
+  numeroTemporada: toInteger(row.numeroTemporada)
+});
+
+// Load de la relacion vio_un
+LOAD CSV WITH HEADERS FROM 'file:///vio_un.csv' AS row
+MATCH (n1:Usuario {usuariold: row.usuariold})
+MATCH (n2:Contenido {contenidold: row.contenidold})
+CREATE (n1)-[:VIO_UN {
+  fecha: row.fecha,
+  minutosReproducidos: toInteger(row.minutosReproducidos),
+  finalizado: row.finalizado = 'true'
+}]->(n2);
+
+// Load de la relacion le_gusta
+LOAD CSV WITH HEADERS FROM 'file:///le_gusta.csv' AS row
+MATCH (n1:Usuario {usuariold: row.usuariold})
+MATCH (n2:Contenido {contenidold: row.contenidold})
+CREATE (n1)-[:LE_GUSTA {
+  valoracion: toInteger(row.valoracion),
+  fecha: row.fecha
+}]->(n2);
+
+// Load de la relacion disponible_en
+LOAD CSV WITH HEADERS FROM 'file:///disponible_en.csv' AS row
+MATCH (n1:Contenido {contenidold: row.contenidold})
+MATCH (n2:Pais {codigo: row.codigoPais})
+CREATE (n1)-[:DISPONIBLE_EN {
+  fechaInicio: row.fechaInicio,
+  fechaFin: row.fechaFin
+}]->(n2);
+
+// Load de la relacion contiene
+LOAD CSV WITH HEADERS FROM 'file:///contiene.csv' AS row
+MATCH (n1:Contenido {contenidold: row.serieId})
+MATCH (n2:Contenido {contenidold: row.episodioId})
+CREATE (n1)-[:CONTIENE {
+  orden: toInteger(row.orden)
+}]->(n2);
