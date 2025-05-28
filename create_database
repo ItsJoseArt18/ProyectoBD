@@ -7,7 +7,7 @@ CREATE CONSTRAINT IF NOT EXISTS FOR (p:Pais) REQUIRE p.codigo IS UNIQUE;
 CREATE CONSTRAINT IF NOT EXISTS FOR (t:Temporada) REQUIRE t.temporadald IS UNIQUE;
 
 // Load del nodo Usuario
-LOAD CSV WITH HEADERS FROM 'file:///usuarios.csv' AS row
+LOAD CSV WITH HEADERS FROM 'https://raw.githubusercontent.com/ItsJoseArt18/ProyectoBD/refs/heads/main/usuarios.csv' AS row
 CREATE (n:Usuario {
   usuariold: row.usuariold,
   nombre: row.nombre,
@@ -18,7 +18,7 @@ CREATE (n:Usuario {
 });
 
 // Load del nodo contenidos 
-LOAD CSV WITH HEADERS FROM 'file:///contenidos.csv' AS row
+LOAD CSV WITH HEADERS FROM 'https://raw.githubusercontent.com/ItsJoseArt18/ProyectoBD/refs/heads/main/contenidos.csv' AS row
 CREATE (n:Contenido {
   contenidold: row.contenidold,
   nombre: row.nombre,
@@ -30,7 +30,7 @@ CREATE (n:Contenido {
 });
 
 // Load del nodo generos
-LOAD CSV WITH HEADERS FROM 'file:///generos.csv' AS row
+LOAD CSV WITH HEADERS FROM 'https://raw.githubusercontent.com/ItsJoseArt18/ProyectoBD/refs/heads/main/generos.csv' AS row
 CREATE (n:Genero {
   codigo: row.codigo,
   nombre: row.nombre,
@@ -38,21 +38,21 @@ CREATE (n:Genero {
 });
 
 // Load del nodo idioma
-LOAD CSV WITH HEADERS FROM 'file:///idiomas.csv' AS row
+LOAD CSV WITH HEADERS FROM 'https://raw.githubusercontent.com/ItsJoseArt18/ProyectoBD/refs/heads/main/idiomas.csv' AS row
 CREATE (n:Idioma {
   codigo: row.codigo,
   nombre: row.nombre
 });
 
 // Load del nodo paises
-LOAD CSV WITH HEADERS FROM 'file:///paises.csv' AS row
+LOAD CSV WITH HEADERS FROM 'https://raw.githubusercontent.com/ItsJoseArt18/ProyectoBD/refs/heads/main/paises.csv' AS row
 CREATE (n:Pais {
   codigo: row.codigo,
   nombre: row.nombre
 });
 
 // Load del nodo temporadas
-LOAD CSV WITH HEADERS FROM 'file:///temporadas.csv' AS row
+LOAD CSV WITH HEADERS FROM 'https://raw.githubusercontent.com/ItsJoseArt18/ProyectoBD/refs/heads/main/temporadas.csv' AS row
 CREATE (n:Temporada {
   temporadald: row.temporadald,
   nombre: row.nombre,
@@ -60,7 +60,7 @@ CREATE (n:Temporada {
 });
 
 // Load de la relacion vio_un
-LOAD CSV WITH HEADERS FROM 'file:///vio_un.csv' AS row
+LOAD CSV WITH HEADERS FROM 'https://raw.githubusercontent.com/ItsJoseArt18/ProyectoBD/refs/heads/main/vio_un.csv' AS row
 MATCH (n1:Usuario {usuariold: row.usuariold})
 MATCH (n2:Contenido {contenidold: row.contenidold})
 CREATE (n1)-[:VIO_UN {
@@ -70,7 +70,7 @@ CREATE (n1)-[:VIO_UN {
 }]->(n2);
 
 // Load de la relacion le_gusta
-LOAD CSV WITH HEADERS FROM 'file:///le_gusta.csv' AS row
+LOAD CSV WITH HEADERS FROM 'https://raw.githubusercontent.com/ItsJoseArt18/ProyectoBD/refs/heads/main/le_gusta.csv' AS row
 MATCH (n1:Usuario {usuariold: row.usuariold})
 MATCH (n2:Contenido {contenidold: row.contenidold})
 CREATE (n1)-[:LE_GUSTA {
@@ -79,7 +79,7 @@ CREATE (n1)-[:LE_GUSTA {
 }]->(n2);
 
 // Load de la relacion disponible_en
-LOAD CSV WITH HEADERS FROM 'file:///disponible_en.csv' AS row
+LOAD CSV WITH HEADERS FROM 'https://raw.githubusercontent.com/ItsJoseArt18/ProyectoBD/refs/heads/main/disponible_en.csv' AS row
 MATCH (n1:Contenido {contenidold: row.contenidold})
 MATCH (n2:Pais {codigo: row.codigoPais})
 CREATE (n1)-[:DISPONIBLE_EN {
@@ -88,7 +88,7 @@ CREATE (n1)-[:DISPONIBLE_EN {
 }]->(n2);
 
 // Load de la relacion contiene
-LOAD CSV WITH HEADERS FROM 'file:///contiene.csv' AS row
+LOAD CSV WITH HEADERS FROM 'https://raw.githubusercontent.com/ItsJoseArt18/ProyectoBD/refs/heads/main/contiene.csv' AS row
 MATCH (n1:Contenido {contenidold: row.serieId})
 MATCH (n2:Contenido {contenidold: row.episodioId})
 CREATE (n1)-[:CONTIENE {
